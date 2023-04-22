@@ -97,6 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objTransform: {fileID: 5255206209228749813}
   _whiteColor: {fileID: 2100000, guid: 1967eaa83a73ce07489b1abcb8d6b9cb, type: 2}
+  _greyColor: {fileID: 2100000, guid: d1a7660443ad36599bf6f584ed30192c, type: 2}
   _renderer: {fileID: 5255206209230953951}
 --- !u!23 &5255206209230953951 stripped
 MeshRenderer:

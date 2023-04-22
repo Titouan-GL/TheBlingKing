@@ -7,6 +7,7 @@ public class Piece : PlacedObject
     private bool _isEaten = false;
     private bool _canBeUsed = false;
     [SerializeField]private Material _whiteColor;
+    [SerializeField]private Material _greyColor;
     [SerializeField] private MeshRenderer _renderer;
     private int player = 0;
 
@@ -31,6 +32,11 @@ public class Piece : PlacedObject
     public void ChangeColor(){
         _renderer.material = _whiteColor;
         player = 1;
+    }
+
+    public void ChangeColorGrey(){
+        _renderer.material = _greyColor;
+        player = 0;
     }
 
     public bool GetCanBeUsed(){

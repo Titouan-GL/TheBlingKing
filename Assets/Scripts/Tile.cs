@@ -44,16 +44,18 @@ public class Tile : MonoBehaviour
     }
 
     public void setHighlighted(bool h){
-        isHighlighted = h;
-        if (!isSelected){
-            if(h){
-                _renderer.material = _highlightColor;
-            }
-            else if(canMoveTo){
-                _renderer.material = _CanMoveToColor;
-            }
-            else{
-                _renderer.material = _actualColor;
+        if(_grid._kingDies == 0){
+            isHighlighted = h;
+            if (!isSelected){
+                if(h){
+                    _renderer.material = _highlightColor;
+                }
+                else if(canMoveTo){
+                    _renderer.material = _CanMoveToColor;
+                }
+                else{
+                    _renderer.material = _actualColor;
+                }
             }
         }
     }
@@ -85,10 +87,12 @@ public class Tile : MonoBehaviour
     }
 
     void OnMouseEnter(){
-        SetHighlightGrid(true);
+        if(!CanvasManager.gamePaused)
+            SetHighlightGrid(true);
     }
     void OnMouseExit(){
-        SetHighlightGrid(false);
+        if(!CanvasManager.gamePaused)
+            SetHighlightGrid(false);
     }
 
     public void ChangeCurrentPiece(Piece piece, string type){

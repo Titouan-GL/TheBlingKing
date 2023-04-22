@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 196802, guid: b6c7ad354ac474944ba26b2895a59759, type: 3}
       propertyPath: m_Name
-      value: Black Knight
+      value: Black_Knight
       objectReference: {fileID: 0}
     - target: {fileID: 464390, guid: b6c7ad354ac474944ba26b2895a59759, type: 3}
       propertyPath: m_RootOrder
@@ -97,6 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objTransform: {fileID: 5395534580909149555}
   _whiteColor: {fileID: 2100000, guid: 1967eaa83a73ce07489b1abcb8d6b9cb, type: 2}
+  _greyColor: {fileID: 2100000, guid: d1a7660443ad36599bf6f584ed30192c, type: 2}
   _renderer: {fileID: 5395534580907124625}
 --- !u!4 &5395534580909149555 stripped
 Transform:

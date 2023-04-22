@@ -5,6 +5,7 @@ using System;
 
 public class GridManager : MonoBehaviour
 {
+
     [SerializeField] private int _width, _height;
     [SerializeField] private Tile _tilePrefab;
     [SerializeField] private GameObject _whiteKing;
@@ -24,24 +25,50 @@ public class GridManager : MonoBehaviour
     private string[] _typeArray = new string[] {"q", "n", "b", "r", "p"};
     private List<int[]> knightMovement = new List<int[]>() {new int[]{-1, 2}, new int[]{1, 2}, new int[]{2, 1}, new int[]{2, -1}
         , new int[]{-1, -2}, new int[]{1, -2}, new int[]{-2, 1}, new int[]{-2, -1}};
-    private int _kingDies = 0;
+    public int _kingDies = 0;
     private int player = 1;
-    private bool canPromote = true;
+    private int nbUsedPieces = 0;
+    public List<Vector2> piecelistPos;
+    public List<string> piecelistName;
+    public int blingLeft;
+    public int movesLeft;
+    public bool SpecialBlingQuantity = false;
+    public CanvasManager canvasManager;
 
     void Start(){
         GenerateGrid();
-        CreateNewPiece(_whiteKing, "k", 0, 0);
-        currentTile = grid[0][0];
-        piecesEaten.Add(ToPiece(grid[0][0].GetCurrentObject()));
-        ToPiece(grid[0][0].GetCurrentObject()).SetPlayer(1);
-        CreateNewPiece(_rook, "r", 1, 1);
-        CreateNewPiece(_rook, "r", 5, 5);
-        CreateNewPiece(_bishop, "b", 5, 4);
-        CreateNewPiece(_queen, "q", 3, 7);
-        CreateNewPiece(_knight, "n", 0, 1);
-        CreateNewPiece(_pawn, "p", 2, 2);
-        CreateNewPiece(_pawn, "p", 3, 4);
-        CreateNewBling(2, 3);
+        for(int i = 0; i < piecelistPos.Count; i ++){
+            int posx = (int)piecelistPos[i].x;
+            int posy = (int)piecelistPos[i].y;
+            if (piecelistName[i] == "k"){
+                CreateNewPiece(_whiteKing, "k", posx, posy);
+                currentTile = grid[posx][posy];
+                piecesEaten.Add(ToPiece(grid[posx][posy].GetCurrentObject()));
+                ToPiece(grid[posx][posy].GetCurrentObject()).SetPlayer(1);
+            }
+            if (piecelistName[i] == "r"){
+                CreateNewPiece(_rook, "r", posx, posy);
+            }
+            if (piecelistName[i] == "b"){
+                CreateNewPiece(_bishop, "b", posx, posy);
+            }
+            if (piecelistName[i] == "q"){
+                CreateNewPiece(_queen, "q", posx, posy);
+            }
+            if (piecelistName[i] == "n"){
+                CreateNewPiece(_knight, "n", posx, posy);
+            }
+            if (piecelistName[i] == "p"){
+                CreateNewPiece(_pawn, "p", posx, posy);
+            }
+            if (piecelistName[i] == "bling"){
+                CreateNewBling(posx, posy);
+                if(!SpecialBlingQuantity){
+                    blingLeft ++;
+                }
+            }
+            
+        }
     }
 
     void CreateNewPiece(GameObject obj, string pieceType, int x,int y){
@@ -56,7 +83,7 @@ public class GridManager : MonoBehaviour
     
     void CreateNewBling(int x,int y){
         var spawnedObject = Instantiate(_bling, new Vector3(x, 0, y), Quaternion.identity);
-        var newBling = spawnedObject.GetComponent<Bling>();
+        var newBling = spawnedObject.GetComponentInChildren<Bling>();
         newBling.SetPos(grid[x][y]);
         newBling.SetObjectType("bling");
         grid[x][y].SetCurrentObject(newBling);
@@ -116,6 +143,7 @@ public class GridManager : MonoBehaviour
         }
         if(_kingDies == 1){
             _kingDies = 2;
+            ThrowKing();
         }
     }
 
@@ -156,7 +184,7 @@ public class GridManager : MonoBehaviour
             possibleTiles = KnightMovement(currentTile.GetCurrentObject());
         }
         if(currentTile.GetObjectType() == "p"){
-            possibleTiles = PawnMovement(currentTile.GetCurrentObject());
+            possibleTiles = PawnMovement(currentTile.GetCurrentObject(), true);
         }
         foreach(Tile t in possibleTiles){
             t.SetMoveTo(true);
@@ -246,16 +274,22 @@ public class GridManager : MonoBehaviour
         return returning;
     }
 
-    private List<Tile> PawnMovement(PlacedObject obj){
+    private List<Tile> PawnMovement(PlacedObject obj, bool isWhite){
         List<Tile> returning = new List<Tile>();
-        if(grid[obj.GetX()][obj.GetY()+1].GetCurrentObject() == null){
-            returning.Add(grid[obj.GetX()][obj.GetY()+1]);
+        if(CanUseTile(obj.GetX(),obj.GetY()+1 )){
+            if(grid[obj.GetX()][obj.GetY()+1].GetCurrentObject() == null && isWhite){
+                returning.Add(grid[obj.GetX()][obj.GetY()+1]);
+            }
         }
-        if(grid[obj.GetX()-1][obj.GetY()+1].GetCurrentObject() != null){
-            returning.Add(grid[obj.GetX()-1][obj.GetY()+1]);
+        if(CanUseTile(obj.GetX()-1,obj.GetY()+1 )){
+            if(grid[obj.GetX()-1][obj.GetY()+1].GetCurrentObject() != null || !isWhite){
+                returning.Add(grid[obj.GetX()-1][obj.GetY()+1]);
+            }
         }
-        if(grid[obj.GetX()+1][obj.GetY()+1].GetCurrentObject() != null){
-            returning.Add(grid[obj.GetX()+1][obj.GetY()+1]);
+        if(CanUseTile(obj.GetX()+1,obj.GetY()+1 )){
+            if(grid[obj.GetX()+1][obj.GetY()+1].GetCurrentObject() != null || !isWhite){
+                returning.Add(grid[obj.GetX()+1][obj.GetY()+1]);
+            }
         }
 
             
@@ -316,7 +350,7 @@ public class GridManager : MonoBehaviour
                     l.AddRange(KnightMovement(p));
                 }
                 if(p.GetObjectType() == "p"){
-                    l.AddRange(PawnMovement(p));
+                    l.AddRange(PawnMovement(p, false));
                 }
                 foreach(Tile t in l){
                     if(t == currentTile){
@@ -354,9 +388,40 @@ public class GridManager : MonoBehaviour
         }
         
     }
+    
+    private void ThrowPiece(){
+        currentTile.GetCurrentObject().SetTile(_width, nbUsedPieces);
+        piecesEaten.Remove(ToPiece(currentTile.GetCurrentObject()));
+        nbUsedPieces ++;
+        ToPiece(currentTile.GetCurrentObject()).ChangeColorGrey();
+        StartCoroutine(MovingPiece(currentTile.GetCurrentObject(),8));
+        Piece p2 = null;
+        int posYmin = 0;
+        foreach(Piece p in piecesEaten){
+            if(p.GetObjectType() == "k"){
+                p2 = p;
+                posYmin = p.GetY();
+            }
+            else if (p.GetY() > posYmin){
+                p.SetTile(p.GetX(), p.GetY()-1);
+                StartCoroutine(MovingPiece(p,8));
+            }
+        }
+        currentTile.SetCurrentObject(p2);
+        StartCoroutine(MovingPiece(p2,8));
+        UnselectCanMoveTo();
+    }
+    
+    private void ThrowKing(){
+        currentTile.GetCurrentObject().SetTile(_width, nbUsedPieces);
+        ToPiece(currentTile.GetCurrentObject()).ChangeColorGrey();
+        StartCoroutine(MovingPiece(currentTile.GetCurrentObject(),8));
+        UnselectCanMoveTo();
+    }
 
     private void gatherbling(int x, int y){
         Destroy(grid[x][y].GetCurrentObject().gameObject);
+        blingLeft --;
         grid[x][y].SetCurrentObject(null);
     }
 
@@ -394,15 +459,24 @@ public class GridManager : MonoBehaviour
                 newPiece.SetEaten(true);
                 newPiece.ChangeColor(); 
                 piecesEaten.Remove(deleted);
-                Destroy(deleted.gameObject);           
+                Destroy(deleted.gameObject);
             }
         }
-        canPromote = false;
     }
 
 
     void Update(){
-        if (Input.GetMouseButtonDown(0) &&_kingDies == 0){
+        if (blingLeft <= 0 && _kingDies <= 0){
+            _kingDies = -1;
+            Unselect();
+            canvasManager.Win();
+        }
+        else if(movesLeft <= 0 || _kingDies == 2){
+            _kingDies = 2;
+            Unselect();
+            canvasManager.Lose();
+        }
+        if (Input.GetMouseButtonDown(0) &&_kingDies == 0 && !CanvasManager.gamePaused){
             if(currentHighlight != null){
                 if(currentHighlight.CanMove() && currentHighlight != currentTile){//if we select a piece
                     if(ToPiece(currentTile.GetCurrentObject()).GetPlayer() == player){//if the piece is the king
@@ -427,8 +501,12 @@ public class GridManager : MonoBehaviour
                         currentTile.setSelected(false);
                         currentHighlight.setSelected(true);
                         currentTile = currentHighlight;
+                        Promotion();
+                        if(currentTile.GetObjectType() != "k"){
+                            ThrowPiece();
+                        }
+                        movesLeft --;
                         ShowCanMoveTo();
-                        canPromote = true;
                     }
                     else{
                         Unselect();
@@ -446,14 +524,17 @@ public class GridManager : MonoBehaviour
                         
                     }
                 }
-                
             }
             else{
                 bool unselect = true;
-                foreach(Piece p in piecesEaten){
-                    if (p.GetCanBeUsed()){
-                        ExchangePiece(p);
-                        unselect = false;
+                if(currentTile != null){
+                    if(ToPiece(currentTile.GetCurrentObject()).GetPlayer() == player){
+                        foreach(Piece p in piecesEaten){
+                            if (p.GetCanBeUsed()){
+                                ExchangePiece(p);
+                                unselect = false;
+                            }
+                        }
                     }
                 }
                 if (unselect){
@@ -461,14 +542,11 @@ public class GridManager : MonoBehaviour
                     currentTile = null;
                 }
             }
-            if(ToPiece(currentTile.GetCurrentObject()).GetPlayer() == player){
-                VerifyOkCases();
-                if(canPromote){
-                    Promotion();
+            if(currentTile != null){
+                if(ToPiece(currentTile.GetCurrentObject()).GetPlayer() == player){
+                    VerifyOkCases();
                 }
             }
         }
-
     }
-
 }

@@ -101,4 +101,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objTransform: {fileID: 5264411005405021928}
   _whiteColor: {fileID: 0}
-  _renderer: {fileID: 0}
+  _greyColor: {fileID: 2100000, guid: d1a7660443ad36599bf6f584ed30192c, type: 2}
+  _renderer: {fileID: 5264411005407446024}
+--- !u!23 &5264411005407446024 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 2300000, guid: 763435837405bc24691af77936be360b, type: 3}
+  m_PrefabInstance: {fileID: 5264411005405158504}
+  m_PrefabAsset: {fileID: 0}

@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 184594, guid: 1f7a3b3d104b8e44cb39f5356ae1d0bb, type: 3}
       propertyPath: m_Name
-      value: Black Queen
+      value: Black_Queen
       objectReference: {fileID: 0}
     - target: {fileID: 435252, guid: 1f7a3b3d104b8e44cb39f5356ae1d0bb, type: 3}
       propertyPath: m_RootOrder
@@ -102,4 +102,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objTransform: {fileID: 6330136512452183074}
   _whiteColor: {fileID: 2100000, guid: 1967eaa83a73ce07489b1abcb8d6b9cb, type: 2}
+  _greyColor: {fileID: 2100000, guid: d1a7660443ad36599bf6f584ed30192c, type: 2}
   _renderer: {fileID: 6330136512450285036}
