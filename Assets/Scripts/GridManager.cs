@@ -184,7 +184,7 @@ public class GridManager : MonoBehaviour
             possibleTiles = KnightMovement(currentTile.GetCurrentObject());
         }
         if(currentTile.GetObjectType() == "p"){
-            possibleTiles = PawnMovement(currentTile.GetCurrentObject(), true);
+            possibleTiles = PawnMovement(currentTile.GetCurrentObject(), ToPiece(currentTile.GetCurrentObject()).GetPlayer() == player);
         }
         foreach(Tile t in possibleTiles){
             t.SetMoveTo(true);

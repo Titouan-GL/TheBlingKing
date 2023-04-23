@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using System;
 
 public class CanvasManager : MonoBehaviour
 {
@@ -14,18 +15,21 @@ public class CanvasManager : MonoBehaviour
     public GameObject lose;
     public GameObject win;
     public static bool gamePaused = false;
+    public static int levelAvailable = 12;
 
     // Update is called once per frame
     void Update()
     {
-        movesLeftTxt.text = "Moves Left : " + gm.movesLeft;
-        blingLeftTxt.text = "Bling Left : " + gm.blingLeft;
-        if(Input.GetKeyDown(KeyCode.Escape) && lose.activeSelf == false && win.activeSelf == false){
-            if(gamePaused){
-                Resume();
-            }
-            else{
-                Pause();
+        if (SceneManager.GetActiveScene().buildIndex != 0){
+            movesLeftTxt.text = "Moves Left : " + gm.movesLeft;
+            blingLeftTxt.text = "Bling Left : " + gm.blingLeft;
+            if(Input.GetKeyDown(KeyCode.Escape) && lose.activeSelf == false && win.activeSelf == false){
+                if(gamePaused){
+                    Resume();
+                }
+                else{
+                    Pause();
+                }
             }
         }
     }
@@ -41,6 +45,7 @@ public class CanvasManager : MonoBehaviour
 
     public void Win(){
         win.SetActive(true);
+        levelAvailable = Math.Max(SceneManager.GetActiveScene().buildIndex +1, levelAvailable);
     }
 
     public void Lose(){
@@ -54,12 +59,18 @@ public class CanvasManager : MonoBehaviour
     }
     public void LoadNextScene()
     {
+        gamePaused = false;
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+    }
+    public void ToMenu()
+    {
+        SceneManager.LoadScene(0);
     }
 
     public void Quit(){
         Debug.Log("Game Quit");
         Application.Quit();
     }
+
 
 }
