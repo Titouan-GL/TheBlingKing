@@ -403,9 +403,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   levelButton: {fileID: 1513048773627045476, guid: 0e16fa31140e98d3597f9cb4705c1255, type: 3}
   buttonsize: 100
-  width: 10
+  width: 6
   height: 2
-  totalnumber: 20
+  totalnumber: 12
 --- !u!1 &304427037
 GameObject:
   m_ObjectHideFlags: 0
@@ -663,7 +663,6 @@ MonoBehaviour:
   pause: {fileID: 0}
   lose: {fileID: 0}
   win: {fileID: 0}
-  inlevel: 0
 --- !u!1 &413736216
 GameObject:
   m_ObjectHideFlags: 0

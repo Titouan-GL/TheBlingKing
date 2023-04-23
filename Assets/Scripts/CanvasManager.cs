@@ -15,7 +15,7 @@ public class CanvasManager : MonoBehaviour
     public GameObject lose;
     public GameObject win;
     public static bool gamePaused = false;
-    public static int levelAvailable = 12;
+    public static int levelAvailable = 1;
 
     // Update is called once per frame
     void Update()
